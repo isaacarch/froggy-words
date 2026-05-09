@@ -1,6 +1,8 @@
 import discord
 from discord import app_commands
 
+import datetime as dt
+
 intents = discord.Intents.default()
 intents.message_content = True
 
@@ -23,6 +25,15 @@ client = MyClient(intents=intents)
 SECRET_WORD = None
 PREV_AUTHOR = None
 WORD_SETTER = None
+TIMEOUT = False
+
+async def timeout(user):
+    if TIMEOUT:
+        delta = dt.timedelta(
+            minutes=1
+        )
+        await user.timeout(until=delta, reason="🐸")
+
 
 @client.event
 async def on_ready():
@@ -39,6 +50,7 @@ async def on_message(message):
         await message.channel.send(
             f"{message.author.mention} has successfully guessed the secret word: {SECRET_WORD}!"
         )
+        await timeout(message.author)
         PREV_AUTHOR = None
         WORD_SETTER = None
         SECRET_WORD = None
@@ -46,6 +58,7 @@ async def on_message(message):
 
     if SECRET_WORD in message.content.lower():
         await message.add_reaction("🐸")
+        await timeout(message.author)
         PREV_AUTHOR = message.author
         return
 
@@ -81,6 +94,23 @@ async def clear_secret_word(interaction: discord.Interaction):
     await interaction.response.send_message(
             f"{interaction.user.mention} has cleared the current secret word!"
     )
+
+@client.tree.command()
+@app_commands.checks.has_permissions(moderate_members=True)
+async def timeout_on_frog(interaction: discord.Interaction, enabled: bool):
+    """Timeout users when they trigger the frog (1 minute)"""
+    global TIMEOUT
+    if enabled:
+        TIMEOUT = True
+        await interaction.response.send_message(
+                f"{interaction.user.mention} has enabled timeouts on correct guesses! Users who trigger the frog's wrath will be timed out for *1 minute*."
+        )
+    else:
+        TIMEOUT = False
+        await interaction.response.send_message(
+                f"{interaction.user.mention} has disabled timeouts on correct guesses! Users will be spared from the frog's wrath for now..."
+        )
+    print(f"TIMEOUT={TIMEOUT}")
 
 client.setup_hook()
 client.run('token')
