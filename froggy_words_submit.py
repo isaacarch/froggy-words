@@ -39,7 +39,8 @@ async def on_message(message):
         await message.channel.send(
             f"{message.author.mention} has successfully guessed the secret word: {SECRET_WORD}!"
         )
-        PREV_AUTHOR = message.author
+        PREV_AUTHOR = None
+        WORD_SETTER = None
         SECRET_WORD = None
         return
 
@@ -55,7 +56,7 @@ async def on_message(message):
 )
 async def set_secret_word(interaction: discord.Interaction, secret_word: str):
     """Choose a secret word for members to guess together!"""
-    global SECRET_WORD, WORD_SETTER
+    global SECRET_WORD, WORD_SETTER, PREV_AUTHOR
 
     if SECRET_WORD:
         await interaction.response.send_message(
@@ -65,6 +66,7 @@ async def set_secret_word(interaction: discord.Interaction, secret_word: str):
     else:
         SECRET_WORD = secret_word.lower()
         WORD_SETTER = interaction.user
+        PREV_AUTHOR = None
         await interaction.response.send_message(
             f"{interaction.user.mention} has set a new secret word!"
         )
@@ -72,8 +74,10 @@ async def set_secret_word(interaction: discord.Interaction, secret_word: str):
 @client.tree.command()
 async def clear_secret_word(interaction: discord.Interaction):
     """Clear the current secret word."""
-    global SECRET_WORD
+    global SECRET_WORD, WORD_SETTER, PREV_AUTHOR
     SECRET_WORD = None
+    WORD_SETTER = None
+    PREV_AUTHOR = None
     await interaction.response.send_message(
             f"{interaction.user.mention} has cleared the current secret word!"
     )
