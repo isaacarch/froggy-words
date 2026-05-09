@@ -30,7 +30,7 @@ async def on_ready():
 
 @client.event
 async def on_message(message):
-    global PREV_AUTHOR, SECRET_WORD
+    global PREV_AUTHOR, SECRET_WORD, WORD_SETTER
     if message.author == client.user or message.author == PREV_AUTHOR or message.author == WORD_SETTER or not SECRET_WORD:
         return
 
