@@ -20,7 +20,7 @@ class MyClient(discord.Client):
 
 client = MyClient(intents=intents)
 
-SECRET_WORD = "cheese"
+SECRET_WORD = None
 PREV_AUTHOR = None
 WORD_SETTER = None
 
