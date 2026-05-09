@@ -32,7 +32,7 @@ async def timeout(user):
         delta = dt.timedelta(
             minutes=1
         )
-        await user.timeout(until=delta, reason="🐸")
+        await user.timeout(delta, reason="🐸")
 
 
 @client.event
@@ -50,7 +50,6 @@ async def on_message(message):
         await message.channel.send(
             f"{message.author.mention} has successfully guessed the secret word: {SECRET_WORD}!"
         )
-        await timeout(message.author)
         PREV_AUTHOR = None
         WORD_SETTER = None
         SECRET_WORD = None
