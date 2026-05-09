@@ -34,7 +34,7 @@ async def on_message(message):
     if message.author == client.user or message.author == PREV_AUTHOR or message.author == WORD_SETTER or not SECRET_WORD:
         return
 
-    if SECRET_WORD == message.content:
+    if SECRET_WORD == message.content.lower():
         await message.add_reaction("🐸")
         await message.channel.send(
             f"{message.author.mention} has successfully guessed the secret word: {SECRET_WORD}!"
@@ -43,7 +43,7 @@ async def on_message(message):
         SECRET_WORD = None
         return
 
-    if SECRET_WORD in message.content:
+    if SECRET_WORD in message.content.lower():
         await message.add_reaction("🐸")
         PREV_AUTHOR = message.author
         return
@@ -63,7 +63,7 @@ async def set_secret_word(interaction: discord.Interaction, secret_word: str):
             ephemeral=True
         )
     else:
-        SECRET_WORD = secret_word
+        SECRET_WORD = secret_word.lower()
         WORD_SETTER = interaction.user
         await interaction.response.send_message(
             f"{interaction.user.mention} has set a new secret word!"
