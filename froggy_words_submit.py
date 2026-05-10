@@ -139,13 +139,22 @@ async def wipe_leaderboard(interaction: discord.Interaction):
 @client.tree.command()
 async def show_leaderboard(interaction: discord.Interaction):
     """Display the leaderboard for the game!"""
-    embed = discord.Embed(title="Froggy Words leaderboard:", color=discord.Colour.gold())
+    description = ""
     leaderboard = sorted(get_leaderboard(), key=lambda x: x[1], reverse=True)
     for pos, (id, wins) in enumerate(leaderboard):
         member = interaction.guild.get_member(id)
-        embed.add_field(name=f"{pos+1} - {member.display_name}", value=f"{wins} words guessed", inline=False)
+        description += f"{pos+1}. **{member.display_name}**:  {wins} words guessed\n"
         if pos+1 > 9:
             break
+    embed = discord.Embed(title="Froggy Words Leaderboard:", color=discord.Colour.gold(), description=description)
+
+#     embed = discord.Embed(title="Froggy Words leaderboard:", color=discord.Colour.gold())
+#     leaderboard = sorted(get_leaderboard(), key=lambda x: x[1], reverse=True)
+#     for pos, (id, wins) in enumerate(leaderboard):
+#         member = interaction.guild.get_member(id)
+#         embed.add_field(name=f"{pos+1} - {member.display_name}", value=f"{wins} words guessed", inline=True)
+#         if pos+1 > 9:
+#             break
     await interaction.response.send_message(embed=embed)
 
 @client.tree.command()
@@ -184,5 +193,4 @@ async def hard_mode(interaction: discord.Interaction, enabled: bool):
 #     pass
 
 
-client.setup_hook()
 client.run('token')
