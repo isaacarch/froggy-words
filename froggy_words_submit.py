@@ -32,7 +32,10 @@ async def timeout(user):
         delta = dt.timedelta(
             minutes=1
         )
-        await user.timeout(delta, reason="🐸")
+        try:
+            await user.timeout(delta, reason="🐸")
+        except:
+            pass
 
 
 @client.event
@@ -110,6 +113,26 @@ async def timeout_on_frog(interaction: discord.Interaction, enabled: bool):
                 f"{interaction.user.mention} has disabled timeouts on correct guesses! Users will be spared from the frog's wrath for now..."
         )
     print(f"TIMEOUT={TIMEOUT}")
+
+
+# ## Role stuff non-functional, i think it would require a DB, so not doing it.
+# @client.tree.command()
+# @app_commands.checks.has_permissions(manage_roles=True)
+# async def set_winner_role(interaction: discord.Interaction, role: discord.Role):
+#     """Set a role to be assigned to the winner of the game. Must be below the bot's role in the hierarchy."""
+#     global ROLE
+#     role = ROLE
+#     await interaction.response.send_message(
+#             f"{interaction.user.mention} has set the winning role to {role.mention}"
+#     )
+
+# @client.tree.command()
+# @app_commands.checks.has_permissions(manage_roles=True)
+# async def clear_winner_role(interaction: discord.Interaction):
+#     """Clear the role currently set as the winner role."""
+#     global ROLE
+#     pass
+
 
 client.setup_hook()
 client.run('token')
