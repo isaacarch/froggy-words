@@ -30,6 +30,7 @@ SECRET_WORD = None
 PREV_AUTHOR = None
 WORD_SETTER = None
 TIMEOUT = False
+HARD_MODE = False
 
 def clean(s):
     return ''.join(filter(lambda x: x not in string.punctuation and x not in string.whitespace, s)).lower()
@@ -52,7 +53,7 @@ async def on_ready():
 @client.event
 async def on_message(message):
     global PREV_AUTHOR, SECRET_WORD, WORD_SETTER, DIRTY_WORD
-    if message.author == client.user or message.author == PREV_AUTHOR or message.author == WORD_SETTER or not SECRET_WORD:
+    if message.author == client.user or (message.author == PREV_AUTHOR and HARD_MODE) or message.author == WORD_SETTER or not SECRET_WORD:
         return
 
     if SECRET_WORD == clean(message.content):
@@ -146,6 +147,21 @@ async def show_leaderboard(interaction: discord.Interaction):
         if pos+1 > 9:
             break
     await interaction.response.send_message(embed=embed)
+
+@client.tree.command()
+@app_commands.checks.has_permissions(moderate_members=True)
+async def hard_mode(interaction: discord.Interaction, enabled: bool):
+    """Prevent the same player from guessing twice in a row"""
+    global HARD_MODE
+    if enabled:
+        HARD_MODE = True
+        await interaction.response.send_message(
+                f"{interaction.user.mention} has enabled hard mode! Players will not be able to guess twice in a row."
+        )
+    else:
+        HARD_MODE = False
+        await interaction.response.send_message(
+                f"{interaction.user.mention} has disabled hard mode! Each player will be able to guess however many times they like.")
 
 
 
