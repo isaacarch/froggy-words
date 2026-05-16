@@ -146,7 +146,8 @@ async def show_leaderboard(interaction: discord.Interaction):
     leaderboard = sorted(get_leaderboard(), key=lambda x: x[1], reverse=True)
     for pos, (id, wins) in enumerate(leaderboard):
         member = interaction.guild.get_member(id)
-        description += f"{pos+1}. **{member.display_name}**:  {wins} words guessed\n"
+        name = member.display_name if member else "anonymous"
+        description += f"{pos+1}. **{name}**:  {wins} words guessed\n"
         if pos+1 > 9:
             break
     embed = discord.Embed(title="Froggy Words Leaderboard:", color=discord.Colour.gold(), description=description)
