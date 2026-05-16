@@ -1,7 +1,10 @@
-import discord
-from discord import app_commands
 import datetime as dt
 import string
+import os
+
+import discord
+from discord import app_commands
+from dotenv import load_dotenv, find_dotenv
 
 from froggy_words_sql import add_win, reset_leaderboard, get_leaderboard, get_user_score
 
@@ -192,5 +195,6 @@ async def hard_mode(interaction: discord.Interaction, enabled: bool):
 #     global ROLE
 #     pass
 
-
-client.run('token')
+load_dotenv(find_dotenv())
+TOKEN = os.getenv('BOT_TOKEN')
+client.run(TOKEN)
